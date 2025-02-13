@@ -29,32 +29,33 @@ export default function Home() {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(
-      JSON.stringify(
-        {
-          message: {
-            notification: {
-              ...formData,
-            },
+    const newForm: Record<string, string> = { ...formData };
+    Object.keys(newForm).forEach(
+      (key) => newForm[key] === "" && delete newForm[key]
+    );
 
-            apns: {
-              headers: {
-                "apns-priority": "5",
-                "apns-push-type": "background",
-              },
+    const data = {
+      message: {
+        notification: {
+          ...newForm,
+        },
 
-              payload: {
-                aps: {
-                  "content-available": 1,
-                },
-              },
+        apns: {
+          headers: {
+            "apns-priority": "5",
+            "apns-push-type": "background",
+          },
+
+          payload: {
+            aps: {
+              "content-available": 1,
             },
           },
         },
-        null,
-        2
-      )
-    );
+      },
+    };
+
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
     setOpenSnackbar(true);
   };
 
